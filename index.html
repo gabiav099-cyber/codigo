@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contraseña Especial 💙</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:sans-serif;}
+
+/* Fondo con temática Hot Wheels */
+body {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Decoraciones de fondo estilo pista */
+body::before, body::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #ff0000, #ff0000 20px, #ffffff 20px, #ffffff 40px);
+  opacity: 0.3;
+}
+body::before { top: 30%; }
+body::after { top: 70%; }
+
+h1 {
+  color: #ffcc00;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600;
+  letter-spacing: 2px;
+}
+
+.pista {
+  color: #ff9933;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* Código / Candado */
+.contenedor-candado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.icono-candado {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  transition: all 0.5s ease;
+}
+.codigo {
+  display: flex;
+  gap: 1rem;
+}
+.cuadro {
+  width: 90px;
+  height: 90px;
+  background: #2a2a4a;
+  border: 3px solid #444;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  transition: all 0.4s ease;
+}
+.cuadro.correcto {
+  background: #e63946;
+  border-color: #ff6b6b;
+  box-shadow: 0 0 15px #e63946;
+  position: relative;
+}
+.cuadro.correcto::after {
+  content: "❤️";
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 1rem;
+}
+.cuadro.error {
+  background: #4a2a2a;
+  border-color: #ff4444;
+  animation: sacudir 0.5s ease;
+}
+@keyframes sacudir {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* Logo Hot Wheels animado en DOS ETAPAS */
+.contenedor-logo {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, red, yellow, red) 1;
+}
+.logo-hw {
+  position: absolute;
+  left: -250px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 1s ease-out;
+}
+/* Etapa 1: avanza al poner el 1 */
+.logo-hw.etapa1 {
+  left: 20%;
+}
+/* Etapa 2: llega al final al poner el 6 */
+.logo-hw.etapa2 {
+  left: 60%;
+}
+.logo-hw img {
+  width: 220px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #ffcc00);
+}
+
+/* Teclado */
+.teclado {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 360px;
+}
+.tecla {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(145deg, #ff3300, #cc2900);
+  color: white;
+  font-size: 2rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 0 #881a00, 0 6px 10px rgba(0,0,0,0.4);
+}
+.tecla:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #881a00, 0 2px 5px rgba(0,0,0,0.4);
+}
+.fila-0 { grid-column: 2; }
+
+/* Mensajes */
+.mensaje {
+  margin-top: 2rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+  text-align: center;
+}
+.mensaje.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mensaje.exito {
+  color: #ffcc00;
+  text-shadow: 0 0 10px #ffcc00;
+}
+.mensaje.error-texto {
+  color: #ff6666;
+  font-size: 1.5rem;
+}
+.boton-borrar {
+  margin-top: 1.5rem;
+  padding: 0.8rem 2rem;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.boton-borrar:hover {
+  background: #555;
+}
+</style>
+</head>
+<body>
+
+<h1>🔐 CONTRASEÑA</h1>
+<p class="pista">PISTA: FECHA ESPECIAL</p>
+
+<div class="contenedor-candado">
+  <div class="icono-candado" id="iconoCandado">🔒</div>
+  <div class="codigo">
+    <div class="cuadro" id="c1"></div>
+    <div class="cuadro" id="c2"></div>
+  </div>
+</div>
+
+<div class="contenedor-logo">
+  <div class="logo-hw" id="logoHW">
+    <!-- 👇 SOLO PONES TU ENLACE AQUÍ 👇 -->
+    <img src="https://www.shutterstock.com/image-photo/hot-wheels-logo-260nw-2752841671.jpg" alt="Hot Wheels">
+    <!-- 👆 SOLO PONES TU ENLACE ARRIBA 👆 -->
+  </div>
+</div>
+
+<div class="teclado">
+  <button class="tecla" onclick="agregar(1)">1</button>
+  <button class="tecla" onclick="agregar(2)">2</button>
+  <button class="tecla" onclick="agregar(3)">3</button>
+  <button class="tecla" onclick="agregar(4)">4</button>
+  <button class="tecla" onclick="agregar(5)">5</button>
+  <button class="tecla" onclick="agregar(6)">6</button>
+  <button class="tecla" onclick="agregar(7)">7</button>
+  <button class="tecla" onclick="agregar(8)">8</button>
+  <button class="tecla" onclick="agregar(9)">9</button>
+  <button class="tecla fila-0" onclick="agregar(0)">0</button>
+</div>
+
+<button class="boton-borrar" onclick="reiniciar()">🗑️ Borrar todo</button>
+
+<div class="mensaje" id="mensaje">
+  ✨ Código correcto ✨<br>
+  ❤️ Muy bien, mi amor ❤️
+</div>
+
+<script>
+let codigo = "";
+const CODIGO_CORRECTO = "16"; // Tu contraseña
+
+function agregar(num) {
+  if (codigo.length >= 2) return;
+  codigo += num;
+
+  // Mostrar números
+  document.getElementById("c1").textContent = codigo[0] || "";
+  document.getElementById("c2").textContent = codigo[1] || "";
+
+  // ✅ PRIMER DÍGITO = 1 → avanza el logo a la mitad
+  if (codigo.length === 1) {
+    if (codigo === "1") {
+      document.getElementById("c1").classList.add("correcto");
+      document.getElementById("logoHW").classList.add("etapa1");
+    } else {
+      document.getElementById("c1").classList.add("error");
+    }
+  }
+
+  // ✅ SEGUNDO DÍGITO = 6 → llega al final
+  if (codigo.length === 2) {
+    setTimeout(verificar, 300);
+  }
+}
+
+function verificar() {
+  if (codigo === CODIGO_CORRECTO) {
+    // ✅ TODO CORRECTO
+    document.getElementById("c2").classList.add("correcto");
+    document.getElementById("iconoCandado").textContent = "🔓";
+    document.getElementById("logoHW").classList.remove("etapa1");
+    document.getElementById("logoHW").classList.add("etapa2");
+    document.getElementById("mensaje").classList.add("visible", "exito");
+  } else {
+    // ❌ ERROR
+    document.getElementById("c2").classList.add("error");
+    document.getElementById("mensaje").innerHTML = "❌ ERROR<br>Inténtalo de nuevo 💙";
+    document.getElementById("mensaje").classList.add("visible", "error-texto");
+  }
+}
+
+function reiniciar() {
+  codigo = "";
+  document.getElementById("c1").textContent = "";
+  document.getElementById("c2").textContent = "";
+  document.getElementById("c1").classList.remove("correcto", "error");
+  document.getElementById("c2").classList.remove("correcto", "error");
+  document.getElementById("iconoCandado").textContent = "🔒";
+  document.getElementById("logoHW").classList.remove("etapa1", "etapa2");
+  document.getElementById("mensaje").classList.remove("visible", "exito", "error-texto");
+  document.getElementById("mensaje").innerHTML = "✨ Código correcto ✨<br>❤️ Muy bien, mi amor ❤️";
+}
+</script>
+
+</body>
+</html>
